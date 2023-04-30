@@ -18,7 +18,7 @@ Craft and Deliver 5 Folded Commando Backpacks
 Deliver the Commando Cap
 Craft and Deliver 3 M1 Flak Rigs
 Deliver 9 Toolkits
-Deliver Nuclear Material
+Deliver the Nuclear Material
 Deliver 12 Methamphetamine
 Deliver 5 Mosin Obrez Pistols
 Deliver 3 U.A. Intel Documents
@@ -54,15 +54,20 @@ def menu(items_to_deliver):
     while True:
         print("\nMenu:")
         print("1. View items")
-        print("2. Update item quantity")
-        print("3. Save and exit")
-        choice = input("Enter your choice (1-3): ")
+        print("2. View needed items")
+        print("3. Update item quantity")
+        print("4. Save and exit")
+        choice = input("Enter your choice (1-4): ")
 
         if choice == "1":
             for item, quantities in items_to_deliver.items():
                 print(f"{item}: {quantities['current']} / {quantities['required']}")
-
         elif choice == "2":
+            for item, quantities in items_to_deliver.items():
+                if quantities['current'] < quantities['required']:
+                    print(f"{item}: {quantities['current']} / {quantities['required']}")
+                    
+        elif choice == "3":
             item = input("Enter the item name: ")
             if item in items_to_deliver:
                 new_quantity = int(input(f"Enter the new quantity for {item}: "))
@@ -71,7 +76,7 @@ def menu(items_to_deliver):
             else:
                 print("Invalid item name. Please try again.")
 
-        elif choice == "3":
+        elif choice == "4":
             save_items_to_file(items_to_deliver)
             break
 
