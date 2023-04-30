@@ -1,6 +1,7 @@
 import re
 import json
 import os
+import pyperclip
 
 filename = "deliver_items.json"
 data = """
@@ -49,6 +50,16 @@ def save_items_to_file(items_to_deliver):
 
 def update_item_quantity(items_to_deliver, item, new_quantity):
     items_to_deliver[item]['current'] = new_quantity
+    
+def export_needed_items(items_to_deliver):
+    needed_items = []
+    for item, quantities in items_to_deliver.items():
+        if quantities['current'] < quantities['required']:
+            needed_items.append(f"{item}: {quantities['current']} / {quantities['required']}")
+
+    needed_items_str = '\n'.join(needed_items)
+    pyperclip.copy(needed_items_str)
+    print("Needed items have been copied to your clipboard.")
 
 def menu(items_to_deliver):
     while True:
@@ -56,8 +67,9 @@ def menu(items_to_deliver):
         print("1. View items")
         print("2. View needed items")
         print("3. Update item quantity")
-        print("4. Save and exit")
-        choice = input("Enter your choice (1-4): ")
+        print("4. Export needed items to clipboard")
+        print("5. Save and exit")
+        choice = input("Enter your choice (1-5): ")
 
         if choice == "1":
             for item, quantities in items_to_deliver.items():
@@ -75,14 +87,16 @@ def menu(items_to_deliver):
                 print(f"Updated {item} quantity to {new_quantity}.")
             else:
                 print("Invalid item name. Please try again.")
-
+                
         elif choice == "4":
+            export_needed_items(items_to_deliver)
+
+        elif choice == "5":
             save_items_to_file(items_to_deliver)
             break
 
         else:
             print("Invalid choice. Please try again.")
-
 
 if __name__ == "__main__":
     if not os.path.exists(filename):
