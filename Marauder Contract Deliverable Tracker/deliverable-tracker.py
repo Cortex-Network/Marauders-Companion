@@ -29,14 +29,12 @@ Deliver 3 Medical Crates
 
 def create_items_dict():
     items_to_deliver = {}
-
     for line in data.splitlines():
         match = re.match(r'(?:Craft and )?Deliver (a|the|(\d+)) (.+)', line)
         if match:
             quantity = match.group(2) if match.group(2) else 1
             item = match.group(3)
             items_to_deliver[item] = {'required': int(quantity), 'current': 0}
-
     return items_to_deliver
 
 def load_items_from_file():
@@ -72,13 +70,14 @@ def menu(items_to_deliver):
         choice = input("Enter your choice (1-5): ")
 
         if choice == "1":
+            print("\n")
             for item, quantities in items_to_deliver.items():
                 print(f"{item}: {quantities['current']} / {quantities['required']}")
         elif choice == "2":
+            print("\n")
             for item, quantities in items_to_deliver.items():
                 if quantities['current'] < quantities['required']:
-                    print(f"{item}: {quantities['current']} / {quantities['required']}")
-                    
+                    print(f"{item}: {quantities['current']} / {quantities['required']}")  
         elif choice == "3":
             item = input("Enter the item name: ")
             if item in items_to_deliver:
@@ -86,15 +85,12 @@ def menu(items_to_deliver):
                 update_item_quantity(items_to_deliver, item, new_quantity)
                 print(f"Updated {item} quantity to {new_quantity}.")
             else:
-                print("Invalid item name. Please try again.")
-                
+                print("Invalid item name. Please try again.")   
         elif choice == "4":
             export_needed_items(items_to_deliver)
-
         elif choice == "5":
             save_items_to_file(items_to_deliver)
             break
-
         else:
             print("Invalid choice. Please try again.")
 
@@ -104,5 +100,4 @@ if __name__ == "__main__":
         save_items_to_file(items_to_deliver)
     else:
         items_to_deliver = load_items_from_file()
-
     menu(items_to_deliver)
